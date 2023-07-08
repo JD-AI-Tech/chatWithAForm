@@ -1,8 +1,8 @@
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import create_tagging_chain, create_tagging_chain_pydantic
+from langchain.chains import  create_tagging_chain_pydantic
 from langchain.prompts import ChatPromptTemplate
 from langchain.chains  import LLMChain
-from UserInfo import PersonalDetails
+from UserInfo import UserInfo
 
 import streamlit as st
 import os
@@ -10,13 +10,13 @@ import os
 os.environ["OPENAI_API_KEY"] = st.secrets['apikey']
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613", verbose=True)
 
-user_details  = PersonalDetails(first_name="",
-                                last_name="",
-                                company="",
-                                topic="",
-                                email="",
-                                job_title="",
-                                language="")
+user_details = UserInfo(first_name="",
+                        last_name="",
+                        company="",
+                        topic="",
+                        email="",
+                        job_title="",
+                        language="")
 
 chain = create_tagging_chain_pydantic(user_details, llm)
 
@@ -32,8 +32,7 @@ def check_what_is_empty(user_details):
             ask_for.append(f'{field}')
     return ask_for
 
-
-def add_non_empty_details(current_details: PersonalDetails, new_details: PersonalDetails):
+def add_non_empty_details(current_details: UserInfo, new_details: UserInfo):
     non_empty_details = {k: v for k, v in new_details.dict().items() if v not in [None, ""]}
     updated_details = current_details.copy(update=non_empty_details)
     return updated_details
@@ -52,7 +51,6 @@ def ask_for_info(ask_for):
     return ai_chat
 
 def filter_response(text_input, user_details ):
-    #chain = create_tagging_chain_pydantic(PersonalDetails, llm)
     res = chain.run(text_input)
     # add filtered info to the
     user_details = add_non_empty_details(user_details, res)
