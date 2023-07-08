@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-class PersonalDetails(BaseModel):
+class UserInfo(BaseModel):
     first_name: str = Field(
         ...,
         description="This is the first name of the user.",
@@ -11,11 +11,11 @@ class PersonalDetails(BaseModel):
     )
     company: str = Field(
         ...,
-        description="This is the company where user works, or previously worked for.",
+        description="This is the company where user works, their place of employment, or previously worked for.",
     )
     topic: str = Field(
         ...,
-        description="Is the issue, topic, item of interest or the information the user is requesting ",
+        description="Is the issue, topic, product, item of interest or the information the user is requesting ",
     )
     email: str = Field(
         ...,
@@ -23,7 +23,7 @@ class PersonalDetails(BaseModel):
     )
     job_title: str = Field(
         ...,
-        description="the job title, job description, position, or the profession title of the user",
+        description="the job title, job description, job position, or the profession title of the user",
     )
     language: str = Field(
         ..., enum=["spanish", "english", "french", "german", "italian"]
