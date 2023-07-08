@@ -1,21 +1,24 @@
 import streamlit as st
 from conversational_form_service import ask_user, ask_for_info
-from UserInfo import PersonalDetails
+from UserInfo import UserInfo
 
 if "user_details" not in st.session_state:
-    st.session_state['user_details'] = PersonalDetails(first_name="",
-                                last_name="",
-                                company="",
-                                topic="",
-                                email="",
-                                job_title="",
-                                language="english")
+    st.session_state['user_details'] = UserInfo(first_name="",
+                                                last_name="",
+                                                company="",
+                                                topic="",
+                                                email="",
+                                                job_title="",
+                                                language="english")
+
+st.set_page_config(layout='centered', page_title='Contact Us')
 
 # define the UI containers
 header_container = st.container()
 chat_output_container = st.container()
 chat_container = st.container()
 contact_form = st.container()
+
 with header_container:
     st.header("Contact Us")
     st.subheader("What may I assist you with?")
@@ -24,19 +27,19 @@ with chat_output_container:
     st.write(":robot_face:  Tell me what information you are looking for. Please provide your contact information.")
 
 with chat_container:
-    #_user_input = st.empty()
-    user_text = st.text_input(label='', placeholder="Send a message", label_visibility='hidden')
-    if user_text:
-        user_details, ask_for = ask_user(user_text, st.session_state['user_details'])
-        if user_details is not None:
-            #chat_output_container.write(user_details)
-            st.session_state['user_details'] = user_details
-            question = ask_for_info(ask_for)
-            st.session_state.user_prompt = question
-            chat_output_container.write(f":computer: {user_text}")
-            chat_output_container.write(f":robot_face:  {question}")
-    # else:
-    #     st.warning("Please enter a topic to proceed.")
+    user_text = st.text_area(label='', placeholder="Send a message", label_visibility='hidden')
+    if (st.button(label='Submit')):
+        if user_text:
+            with st.spinner('Please Wait ...'):
+                user_details, ask_for = ask_user(user_text, st.session_state['user_details'])
+                if user_details is not None:
+                    st.session_state['user_details'] = user_details
+                    question = ask_for_info(ask_for)
+                    st.session_state.user_prompt = question
+                    chat_output_container.write(f":computer: {user_text}")
+                    chat_output_container.write(f":robot_face:  {question}")
+        else:
+            st.warning("Please enter a message to proceed.")
 
 with st.expander("View Contact Form"):
     st.write(f"I am intested in : {st.session_state.user_details.topic}")
